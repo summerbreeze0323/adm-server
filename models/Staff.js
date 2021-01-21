@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 var jwt = require('jsonwebtoken');
 
-const userSchema = mongoose.Schema({
+const staffSchema = mongoose.Schema({
 	name: {
 		type: String,
 		maxlength: 50
@@ -34,21 +34,21 @@ const userSchema = mongoose.Schema({
 	}	
 })
 
-userSchema.pre('save', function (next) {
-	var user = this; // === userSchema
+staffSchema.pre('save', function (next) {
+	var staff = this; // === staffSchema
 
 	// 비밀번호가 변경될때만 비밀번호 암호화 코드 실행
-	if (user.isModified('password')) {
+	if (staff.isModified('password')) {
 		// 비밀번호 암호화
 		bcrypt.genSalt(saltRounds, function (err, salt) {
 			if (err) return next(err)
 			
-			bcrypt.hash(user.password, salt, function (err, hash) { // hash는 암호화된 비밀번호
+			bcrypt.hash(staff.password, salt, function (err, hash) { // hash는 암호화된 비밀번호
 				if (err) return next(err)
 				
-				// userSchema.password를 hash(암호화된 비밀번호)로 변경
-				user.password = hash
-				next() // index.js의 user.save로 이동
+				// staffSchema.password를 hash(암호화된 비밀번호)로 변경
+				staff.password = hash
+				next() // index.js의 staff.save로 이동
 			})
 		})
 	} else {
@@ -57,7 +57,7 @@ userSchema.pre('save', function (next) {
 })
 
 // 비밀번호 비교
-userSchema.methods.comparePassword = function (plainPassword, callback) {
+staffSchema.methods.comparePassword = function (plainPassword, callback) {
 	bcrypt.compare(plainPassword, this.password, function (err, isMatch) {
 		if (err) return callback(err)
 
@@ -66,32 +66,32 @@ userSchema.methods.comparePassword = function (plainPassword, callback) {
 }
 
 // 토큰 생성
-userSchema.methods.createToken = function (callback) {
-	var user = this;
+staffSchema.methods.createToken = function (callback) {
+	var staff = this;
 	// jsonwebtoken을 이용하여 토큰 생성
-	var token = jwt.sign(user._id.toHexString(), 'secretToken')
+	var token = jwt.sign(staff._id.toHexString(), 'secretToken')
 
-	user.token = token
-	user.save(function (err, user) {
+	staff.token = token
+	staff.save(function (err, staff) {
 		if (err) return callback(err)
-		callback(null, user)
+		callback(null, staff)
 	})
 }
 
-userSchema.statics.findByToken = function (token, callback) {
-	var user = this;
+staffSchema.statics.findByToken = function (token, callback) {
+	var staff = this;
 
 	// 토큰을 decode
 	jwt.verify(token, 'secretToken', function (err, decoded) {
 		// 유저 아이디를 이용해서 유저를 찾고
 		// 클라이언트에서 가져온 토큰과 db에 보관된 토큰이 일치하는지 확인
-		user.findOne({ '_id': decoded, 'token': token }, function (err, user) {
+		staff.findOne({ '_id': decoded, 'token': token }, function (err, staff) {
 			if (err) return callback(err);
-			callback(null, user);
+			callback(null, staff);
 		})
 	})
 }
 
-const User = mongoose.model('user', userSchema)
+const Staff = mongoose.model('staff', staffSchema)
 
-module.exports = { User }
+module.exports = { Staff }
