@@ -24,6 +24,7 @@ mongoose.connect(config.mongoURI, {
 	.catch(err => console.log(err))
 
 app.use('/api/staffs', require('./routes/staffs'))
+app.use('/api/users', require('./routes/users'))
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
