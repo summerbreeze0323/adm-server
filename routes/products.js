@@ -2,6 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { Product } = require('../models/Product');
 
+const multer = require('multer');
+const multerS3 = require('multer-s3');
+const path = require('path');
+const AWS = require('aws-sdk');
+
 //=================================
 //             Product
 //=================================
@@ -46,5 +51,32 @@ router.get('/', async (req, res) => {
     }
   } 
 })
+
+const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_KEY,
+  secretAccessKey: process.env.AWS_PRIVATE_KEY
+});
+
+const uploadImageS3 = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'my-cafe/products',
+    region: 'ap-northeast-2',
+    key(req, file, cb) {
+      const ext = path.extname(file.originalname);
+      const basename = path.basename(file.originalname, ext);
+      cb(null, basename + new Date().valueOf() + ext);
+    }
+  })
+})
+
+router.post('/image', uploadImageS3.single('file'), async (req, res) => {
+  try {
+    res.status(200).json({ success: true, url: req.file.location})
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ success: false, url: '' });
+  }
+});
 
 module.exports = router;
