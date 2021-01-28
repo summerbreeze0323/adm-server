@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const { Product } = require('../models/Product');
+const { auth } = require('../middleware/auth');
 
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const path = require('path');
 const AWS = require('aws-sdk');
+const moment = require('moment');
 
 //=================================
 //             Product
@@ -78,5 +80,16 @@ router.post('/image', uploadImageS3.single('file'), async (req, res) => {
     res.status(400).json({ success: false, url: '' });
   }
 });
+
+router.post('/', auth, async (req, res) => {
+  try {
+    const product = new Product(req.body)
+
+    const result = await product.save()
+    res.status(200).json({ success: true })
+  } catch (err) {
+    res.status(400).json({ err })
+  }
+})
 
 module.exports = router;

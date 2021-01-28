@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const moment = require('moment')
 
 const productSchema = mongoose.Schema({
   category: {
@@ -41,10 +42,11 @@ const productSchema = mongoose.Schema({
     type: String
   },
   create_date: {
-    type: Date
+    type: String,
+    default: moment().format("YYYY-MM-DD hh:mm:ss")
   },
   update_date: {
-    type: Date
+    type: String
   }
 })
 
