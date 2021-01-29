@@ -92,4 +92,28 @@ router.post('/', auth, async (req, res) => {
   }
 })
 
+router.get('/:id', async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id)
+    res.status(200).json({ success: true, item: product })
+  } catch (err) {
+    res.status(400).json({ success: false, err })
+  }
+})
+
+router.put('/:id', auth, async (req, res) => {
+  try {
+    const modifiedPost = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        ...req.body,
+        update_date: moment().format("YYYY-MM-DD HH:mm:ss")
+      }
+    )
+    res.status(200).json({ success: true })
+  } catch (err) {
+    res.status(400).json({ err })
+  }
+})
+
 module.exports = router;

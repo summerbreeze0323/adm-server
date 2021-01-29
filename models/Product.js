@@ -43,7 +43,7 @@ const productSchema = mongoose.Schema({
   },
   create_date: {
     type: String,
-    default: moment().format("YYYY-MM-DD hh:mm:ss")
+    default: moment().format("YYYY-MM-DD HH:mm:ss")
   },
   update_date: {
     type: String
