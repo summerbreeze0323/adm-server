@@ -7,6 +7,9 @@ const cors = require('cors')
 
 const config = require('./config/key')
 
+const dotenv = require('dotenv')
+dotenv.config();
+
 app.use(cors({ origin: true, credentials: true }));
 // application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -24,6 +27,8 @@ mongoose.connect(config.mongoURI, {
 	.catch(err => console.log(err))
 
 app.use('/api/staffs', require('./routes/staffs'))
+app.use('/api/users', require('./routes/users'))
+app.use('/api/products', require('./routes/products'))
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
