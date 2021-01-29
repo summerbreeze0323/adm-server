@@ -11,14 +11,20 @@
   "author": "julee-kim",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.831.0",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "concurrently": "^5.3.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.10.12"
+    "moment": "^2.29.1",
+    "mongoose": "^5.10.12",
+    "multer": "^1.4.2",
+    "multer-s3": "^2.9.0",
+    "path": "^0.12.7"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"

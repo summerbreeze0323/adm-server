@@ -83,12 +83,15 @@ staffSchema.statics.findByToken = function (token, callback) {
 
 	// 토큰을 decode
 	jwt.verify(token, 'secretToken', function (err, decoded) {
-		// 유저 아이디를 이용해서 유저를 찾고
-		// 클라이언트에서 가져온 토큰과 db에 보관된 토큰이 일치하는지 확인
-		staff.findOne({ '_id': decoded, 'token': token }, function (err, staff) {
-			if (err) return callback(err);
-			callback(null, staff);
-		})
+		if (decoded !== undefined) {
+			staff.findOne({ '_id': decoded, 'token': token }, function (err, staff) {
+				if (err) return callback(err);
+
+				return callback(null, staff);
+			})
+		} else {
+			return callback(null, null)
+		}
 	})
 }
 
