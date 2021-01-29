@@ -116,4 +116,13 @@ router.put('/:id', auth, async (req, res) => {
   }
 })
 
+router.delete('/:id', auth, async (req, res) => {
+  try {
+    await Product.deleteOne({ _id: req.params.id })
+    res.status(200).json({ success: true })
+  } catch (err) {
+    res.status(400).json({ err })
+  }
+})
+
 module.exports = router;
