@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { Store } = require('../models/Store');
 const { auth } = require('../middleware/auth');
+const moment = require('moment');
 
 //=================================
 //             Store
@@ -51,6 +52,41 @@ router.get('/', async (req, res) => {
       res.status(400).json({ success: false, err })
     }
   } 
+})
+
+router.post('/', auth, async (req, res) => {
+  try {
+    const store = new Store(req.body)
+
+    await store.save()
+    res.status(200).json({ success: true })
+  } catch (err) {
+    res.status(400).json({ err })
+  }
+})
+
+router.get('/:id', async (req, res) => {
+  try {
+    const store = await Store.findById(req.params.id)
+    res.status(200).json({ success: true, item: store })
+  } catch (err) {
+    res.status(400).json({ success: false, err })
+  }
+})
+
+router.put('/:id', auth, async (req, res) => {
+  try {
+    await Store.findByIdAndUpdate(
+      req.params.id,
+      {
+        ...req.body,
+        update_date: moment().format("YYYY-MM-DD HH:mm:ss")
+      }
+    )
+    res.status(200).json({ success: true })
+  } catch (err) {
+    res.status(400).json({ err })
+  }
 })
 
 module.exports = router;
