@@ -26,6 +26,12 @@ const storeSchema = mongoose.Schema({
   zonecode: {
     type: String
   },
+  lat: {
+    type: String
+  },
+  lot: {
+    type: String
+  },
   create_date: {
     type: String,
     default: moment().format("YYYY-MM-DD HH:mm:ss")
